@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cn.anony</groupId>
+    <artifactId>pluggable</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.8</java.version>
+        <spring-boot.version>2.7.15</spring-boot.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.sun</groupId>
+            <artifactId>tools</artifactId>
+            <version>1.8</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/tools.jar</systemPath>
+        </dependency>
+
+        <!--      注解处理器的注解,用于代替手动编辑resources/META-INF/services的文件          -->
+        <dependency>
+            <groupId>com.google.auto.service</groupId>
+            <artifactId>auto-service-annotations</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
+
+            <!--      注解处理器的注解,用于代替手动编辑resources/META-INF/services的文件          -->
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>com.google.auto.service</groupId>
+                            <artifactId>auto-service</artifactId>
+                            <version>1.0.1</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+
+        <!--  问题： Compilation failure ，服务配置文件不正确, 或构造处理程序对象javax.annotation.processing.Processor: Provider cn.anony.config.ElementAnnoConfig not found时抛出异常错误；
+        原因：将自定义处理器的文件放入其中，它将在编译我们的artifactI期间触发编译器，并且由于处理器本身尚未编译，编译器将显示有关它的错误。因此我们需要跳过注释处理来避免这种情况。可使用-proc:none 或maven 的<proc>none</proc>
+        解决： https://stackoverflow.com/questions/38926255/maven-annotation-processing-processor-not-found
+        注意： 跳过注解处理器会导致lombok也失效
+        -->
+              <!--  <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <configuration>
+                            <proc>none</proc>
+                            &lt;!&ndash;不使用注释处理器，只编译源文件&ndash;&gt;
+&lt;!&ndash;                            <compilerArgument>-proc:none</compilerArgument>&ndash;&gt;
+                            <source>1.8</source>
+                            <target>1.8</target>
+                        </configuration>
+                    </execution>
+                </executions>-->
+            </plugin>
+        </plugins>
+    </build>
+</project>
