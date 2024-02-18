@@ -41,7 +41,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
 
-            <!--      注解处理器的注解,用于代替手动编辑resources/META-INF/services的文件          -->
+            <!--      注解处理器的注解,用于代替手动编辑resources/META-INF/services的文件 来实现自定义处理器的注册         -->
                 <configuration>
                     <annotationProcessorPaths>
                         <path>
@@ -52,7 +52,9 @@
                     </annotationProcessorPaths>
                 </configuration>
 
-        <!--  问题： Compilation failure ，服务配置文件不正确, 或构造处理程序对象javax.annotation.processing.Processor: Provider cn.anony.config.ElementAnnoConfig not found时抛出异常错误；
+        <!--
+        自定义注解处理器采用手动配置注册时创建resources/META-INF/services ，需要添加下面编译方式
+         问题： Compilation failure ，服务配置文件不正确, 或构造处理程序对象javax.annotation.processing.Processor: Provider cn.anony.config.ElementAnnoConfig not found时抛出异常错误；
         原因：将自定义处理器的文件放入其中，它将在编译我们的artifactI期间触发编译器，并且由于处理器本身尚未编译，编译器将显示有关它的错误。因此我们需要跳过注释处理来避免这种情况。可使用-proc:none 或maven 的<proc>none</proc>
         解决： https://stackoverflow.com/questions/38926255/maven-annotation-processing-processor-not-found
         注意： 跳过注解处理器会导致lombok也失效
